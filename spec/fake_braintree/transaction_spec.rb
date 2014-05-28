@@ -136,3 +136,37 @@ describe FakeBraintree::SinatraApp do
     end
   end
 end
+
+describe FakeBraintree::SinatraApp do
+  context "Braintree::Transaction.release_from_escrow" do
+    it "should be able to mark escrow as released" do
+      id = create_transaction.id
+
+      result = Braintree::Transaction.release_from_escrow(id)
+
+      expect(result).to be_success
+      expect(Braintree::Transaction.find(id).escrow_status).to eq Braintree::Transaction::EscrowStatus::ReleasePending
+    end
+
+    def create_transaction
+      Braintree::Transaction.sale(payment_method_token: cc_token, amount: 10.0).transaction
+    end
+  end
+end
+
+describe FakeBraintree::SinatraApp do
+  context "Braintree::Transaction.release_from_escrow" do
+    it "should be able to mark escrow as released" do
+      id = create_transaction.id
+
+      result = Braintree::Transaction.cancel_release(id)
+
+      expect(result).to be_success
+      expect(Braintree::Transaction.find(id).escrow_status).to eq Braintree::Transaction::EscrowStatus::Held
+    end
+
+    def create_transaction
+      Braintree::Transaction.sale(payment_method_token: cc_token, amount: 10.0).transaction
+    end
+  end
+end

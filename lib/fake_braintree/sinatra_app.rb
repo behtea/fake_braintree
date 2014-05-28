@@ -46,7 +46,6 @@ module FakeBraintree
 
     # Braintree::Customer.find
     get '/merchants/:merchant_id/customers/:id' do
-      debugger
       customer = FakeBraintree.registry.customers[params[:id]]
       if customer
         gzipped_response(200, customer.to_xml(root: 'customer'))
@@ -195,6 +194,28 @@ module FakeBraintree
                               'status' => Braintree::Transaction::Status::Voided}
       FakeBraintree.registry.transactions[transaction['id']] = transaction_response
       gzipped_response(200, transaction_response.to_xml(root: 'transaction'))
+    end
+
+    # Braintree::Transaction.release_from_escrow
+    put '/merchants/:merchant_id/transactions/:transaction_id/release_from_escrow' do
+      transaction = FakeBraintree.registry.transactions[params[:transaction_id]]
+      transaction_response = {'id' => transaction['id'],
+                              'type' => transaction['sale'],
+                              'amount' => transaction['amount'],
+                              'escrow_status' => Braintree::Transaction::EscrowStatus::ReleasePending}
+      FakeBraintree.registry.transactions[transaction['id']] = transaction_response
+      gzipped_response(200, transaction_response.to_xml(root: 'transaction'))      
+    end
+
+    # Braintree::Transaction.cancel_release
+    put '/merchants/:merchant_id/transactions/:transaction_id/cancel_release' do
+      transaction = FakeBraintree.registry.transactions[params[:transaction_id]]
+      transaction_response = {'id' => transaction['id'],
+                              'type' => transaction['sale'],
+                              'amount' => transaction['amount'],
+                              'escrow_status' => Braintree::Transaction::EscrowStatus::Held}
+      FakeBraintree.registry.transactions[transaction['id']] = transaction_response
+      gzipped_response(200, transaction_response.to_xml(root: 'transaction'))      
     end
 
     # Braintree::TransparentRedirect.url
