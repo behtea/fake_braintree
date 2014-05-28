@@ -8,6 +8,7 @@ require 'fake_braintree/subscription'
 require 'fake_braintree/redirect'
 require 'fake_braintree/credit_card'
 require 'fake_braintree/address'
+require 'fake_braintree/merchant_account'
 
 require 'fake_braintree/registry'
 require 'fake_braintree/server'
@@ -75,6 +76,15 @@ module FakeBraintree
       'params' => {}
     }
   end
+
+  def self.create_merchant_account_failure
+    {
+      'message' => 'Do Not Honor',
+      'merchant_account' => nil,
+      'errors' => { 'errors' => [] },
+      'params' => {}
+    }
+  end  
 
   def self.decline_all_cards!
     self.decline_all_cards = true

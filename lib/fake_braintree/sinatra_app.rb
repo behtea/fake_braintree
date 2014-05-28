@@ -20,6 +20,23 @@ module FakeBraintree
       end
     end
 
+    # Braintree::MerchantAccount.create
+    post '/merchants/:merchant_id/merchant_accounts/create_via_api' do      
+      merchant_account_hash = hash_from_request_body_with_key('merchant_account')
+      options = {merchant_id: params[:merchant_id]}
+      MerchantAccount.new(merchant_account_hash, options).create      
+    end
+
+    # Braintree::MerchantAccount.find
+    get '/merchants/:merchant_id/merchant_accounts/:id' do
+      merchant_account = FakeBraintree.registry.merchant_accounts[params[:id]]
+      if merchant_account        
+        gzipped_response(200, merchant_account.to_xml(root: 'merchant_account'))
+      else
+        gzipped_response(404, {})
+      end      
+    end
+
     # Braintree::Customer.create
     post '/merchants/:merchant_id/customers' do
       customer_hash = hash_from_request_body_with_key('customer')
@@ -29,6 +46,7 @@ module FakeBraintree
 
     # Braintree::Customer.find
     get '/merchants/:merchant_id/customers/:id' do
+      debugger
       customer = FakeBraintree.registry.customers[params[:id]]
       if customer
         gzipped_response(200, customer.to_xml(root: 'customer'))
