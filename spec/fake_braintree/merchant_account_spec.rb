@@ -4,8 +4,8 @@ describe 'Braintree::MerchantAccount.create' do
 
   it 'successfully creates a merchant account individual' do
     result = Braintree::MerchantAccount.create(
-      :individual => valid_individual_merchant_account_data,
-      :funding => valid_funding_merchant_account_data,
+      :individual => hash_individual_merchant_account_data,
+      :funding => hash_funding_merchant_account_data,
       :tos_accepted => true,
       :master_merchant_account_id => data_master_merchant_account_id,
     )
@@ -14,9 +14,9 @@ describe 'Braintree::MerchantAccount.create' do
 
   it 'successfully creates a merchant account business' do
     result = Braintree::MerchantAccount.create(
-      :individual => valid_individual_merchant_account_data,
-      :business => valid_business_merchant_account_data,
-      :funding => valid_funding_merchant_account_data,
+      :individual => hash_individual_merchant_account_data,
+      :business => hash_business_merchant_account_data,
+      :funding => hash_funding_merchant_account_data,
       :tos_accepted => true,
       :master_merchant_account_id => data_master_merchant_account_id,
     )
@@ -25,7 +25,8 @@ describe 'Braintree::MerchantAccount.create' do
 
   it 'failes creates a merchant account individual' do
     result = Braintree::MerchantAccount.create(
-      :funding => valid_funding_merchant_account_data,
+      :individual => hash_individual_merchant_account_data({:first_name => "", :last_name => ""}),
+      :funding => hash_funding_merchant_account_data,
       :tos_accepted => true,
       :master_merchant_account_id => data_master_merchant_account_id,
     )
@@ -34,8 +35,9 @@ describe 'Braintree::MerchantAccount.create' do
 
   it 'failes creates a merchant account business' do
     result = Braintree::MerchantAccount.create(
-      :business => valid_business_merchant_account_data,
-      :funding => valid_funding_merchant_account_data,
+      :individual => hash_individual_merchant_account_data({:first_name => "", :last_name => ""}),
+      :business => hash_business_merchant_account_data({:legal_name => "", :tax_id => ""}),
+      :funding => hash_funding_merchant_account_data,
       :tos_accepted => true,
       :master_merchant_account_id => data_master_merchant_account_id,
     )
@@ -47,9 +49,9 @@ describe 'Braintree::MerchantAccount.find' do
 
   it 'successfully finds a merchant account' do
     result = Braintree::MerchantAccount.create(
-      :individual => valid_individual_merchant_account_data,
-      :business => valid_business_merchant_account_data,
-      :funding => valid_funding_merchant_account_data,
+      :individual => hash_individual_merchant_account_data,
+      :business => hash_business_merchant_account_data,
+      :funding => hash_funding_merchant_account_data,
       :tos_accepted => true,
       :master_merchant_account_id => data_master_merchant_account_id,
     )

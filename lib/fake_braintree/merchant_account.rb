@@ -14,7 +14,7 @@ module FakeBraintree
     end
 
     def create      
-      if invalid?
+      unless invalid?
         response_for_invalid_params
       else
         create_merchant_account_with(merchant_account_hash)
@@ -31,8 +31,23 @@ module FakeBraintree
     end    
 
     def invalid?
-      !individual_hash.present? #&& !business_hash.present?
+      if business_hash.present?
+        is_individual_valid? && is_business_valid?
+      else        
+        is_individual_valid?
+      end          
     end     
+
+    def is_business_valid?
+      !business_hash["legal_name"].nil? && !business_hash["tax_id"].nil?
+    end
+
+    def is_individual_valid?
+      !individual_hash["first_name"].nil? && 
+      !individual_hash["last_name"].nil? && 
+      !individual_hash["date_of_birth"].nil? && 
+      !individual_hash["email"].nil?
+    end
 
     def individual_hash
       @merchant_account_hash['individual'] || {}
